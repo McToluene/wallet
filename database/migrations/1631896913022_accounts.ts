@@ -6,11 +6,11 @@ export default class Accounts extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
-      table.string('firstName');
-      table.string('lastName');
+      table.string('first_name');
+      table.string('last_name');
       table.string('email');
-      table.string('accountNumber');
-      table.string('bankName');
+      table.string('account_number');
+      table.string('bank_name');
       table.string('password');
 
       /**

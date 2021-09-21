@@ -5,12 +5,14 @@ import { FlutterwaveResponse } from 'App/Dtos/Response/FlutterWave/FlutterWaveRe
 import { VirtualAccount } from 'App/Dtos/Response/FlutterWave/VirtualAccount';
 import Account from 'App/Models/Account';
 import { AccountResponse } from 'App/Dtos/Response/AccountResponse';
+import Env from '@ioc:Adonis/Core/Env';
+import crypto from 'crypto';
 
 export default class AccountService {
   private flutterWave: any;
 
   constructor() {
-    this.flutterWave = new Flutterwave('', '');
+    this.flutterWave = new Flutterwave(Env.get('PUBLIC_KEY'), Env.get('SECRET_KEY'));
   }
 
   public async createVirtualAccount(
@@ -23,12 +25,15 @@ export default class AccountService {
         firstname: accountPayload.firstName,
         lastname: accountPayload.lastName,
         bvn: accountPayload.bvn,
-        is_permanent: true,
+        is_permanent: false,
+        tx_ref: crypto.randomBytes(16).toString('hex'),
       };
 
       Logger.info('Creating virtual account number');
       const response: FlutterwaveResponse<VirtualAccount> =
         await this.flutterWave.VirtualAcct.create(payload);
+
+      Logger.warn('' + response.message);
 
       if (response.data !== null) {
         Logger.info('Creating account');
@@ -54,6 +59,7 @@ export default class AccountService {
         firstName: payload.firstName,
         lastName: payload.lastName,
         email: payload.email,
+        password: payload.password,
       });
 
       if (newAccount.$isPersisted)
@@ -63,6 +69,8 @@ export default class AccountService {
           email: newAccount.email,
           fullName: newAccount.firstName + ' ' + newAccount.lastName,
         };
+
+      Logger.info('Account created');
     } catch (error) {
       Logger.warn(error);
     }

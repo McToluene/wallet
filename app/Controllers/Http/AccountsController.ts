@@ -14,9 +14,9 @@ export default class AccountsController {
     const newAccountSchema = schema.create({
       firstName: schema.string({ trim: true }),
       lastName: schema.string({ trim: true }),
-      email: schema.string({ trim: true }, [rules.email]),
+      email: schema.string({ trim: true }, [rules.email()]),
       password: schema.string({ trim: true }, [rules.confirmed()]),
-      bvn: schema.string({ trim: true }),
+      bvn: schema.string.optional({ trim: true }),
     });
 
     const validatedPayload = await request.validate({ schema: newAccountSchema });
@@ -35,7 +35,7 @@ export default class AccountsController {
       response.status(status);
     }
 
-    const responseBody = new BaseResponse<AccountResponse | null>(200, message, result);
+    const responseBody = new BaseResponse<AccountResponse | null>(status, message, result);
     return responseBody;
   }
 }

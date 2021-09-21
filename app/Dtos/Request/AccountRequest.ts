@@ -3,5 +3,5 @@ export interface AccountRequest {
   lastName: string;
   email: string;
   password: string;
-  bvn: string;
+  bvn?: string;
 }

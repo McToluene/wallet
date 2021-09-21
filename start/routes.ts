@@ -24,4 +24,4 @@ Route.get('/', async () => {
   return { hello: 'world' };
 });
 
-Route.post('/', 'AccountsController.create');
+Route.post('/account', 'AccountsController.store');
